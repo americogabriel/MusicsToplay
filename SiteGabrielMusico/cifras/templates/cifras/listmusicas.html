@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Musicas para aprender</title>
+</head>
+<body>
+    <h1>Filtro por instrumento:</h1>
+    <a href="{% url 'url_listmusicas'%}?q=Guitarra">Guitarra</a>
+    <a href="{% url 'url_listmusicas'%}?q=Violao">Violao</a>
+    <a href="{% url 'url_listmusicas'%}">Limpar Filtro</a>
+    {% for musica in musicas %}
+    <hr></hr>
+        <h4>Id do objeto: </h4>{{musica.id}}
+        <h4>Nome da banda: </h4>{{musica.nome_banda}} 
+        <h4>Nome da música: </h4>{{musica.nome_musica}}
+        <h4>Duração da música: </h4>{{musica.duracao}}
+        <h4>Tom da música: </h4>{{musica.tom_musica}}
+        <h4>Instrumento para aprender: </h4>{{musica.instrumento}} <br><br>
+        <a href="{% url 'url_updatemusicas' musica.id %}">Atualizar informações da musica | </a>
+        
+        <a href="{% url 'url_deletemusicas' musica.id %}">Excluir musica da lista de musicas</a>
+    {% endfor %}
+</body>
+</html>
