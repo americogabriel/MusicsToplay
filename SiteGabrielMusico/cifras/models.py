@@ -1,6 +1,7 @@
 from django.db import models
 
 class MusicasAprender(models.Model):
+
     # tupla de escolhas
     INSTRUMENTO_CHOICES = (
         ('Guitarra','Guitarra'),
@@ -23,6 +24,7 @@ class MusicasAprender(models.Model):
 
 class Favorita(models.Model):
 
+    # tupla de escolhas
     DIFICULTADE_CHOICES = (
         (1,1),
         (2,2),
