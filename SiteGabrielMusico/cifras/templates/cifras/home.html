@@ -8,17 +8,21 @@
 <body>
     
         <h1>Pesquise seu artista</h1>
-        <form method="POST">
+        <form method="GET">
             {% csrf_token %}
             <input type="text" name="pesquisa" placeholder="Pesquise por um artista ou música">
             <button type="submit">Pesquisar</button>
         </form>
-        {%if method == 'POST'%}
+
+        {% if musicas %}
+        <div class="caixa-musica">
             {% for musica in musicas.data%} <!--pega o dicionario com o response da API(musicas) e acessa a lista chamada "data" que é onde as músicas estão -->
-                <img src="{{musica.album.cover}}" alt="{{musica.album.title}}"> <br>
+                <a href="{%url 'url_perfilmusica' musica.id%}"><img src="{{musica.album.cover}}" alt="{{musica.album.title}}"></a> <br>
+                
                 {{musica.title}} -
                 {{musica.artist.name}}<br>
             {% endfor %}
+        </div>
         {% endif %}
     
 </body>

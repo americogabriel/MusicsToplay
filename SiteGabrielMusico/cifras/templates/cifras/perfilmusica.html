@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{musica.title}}</title>
+</head>
+<body>
+    <div class="caixa-musica">
+        <img src="{{musica.album.cover}}" alt="{{musica.album.title}}"> <br>
+        <p>Artista: {{musica.artist.name}}</p>
+        <p>Título da obra: {{musica.title}}</p> 
+        <p>Duração: {{musica.duration}} segundos</p> 
+        <p>BPM: {{musica.bpm}}</p>
+        <audio class="audio-player" controls>
+            <source src="{{musica.preview}}" type="audio/mpeg">
+        </audio>
+        <div class="favoritar">
+            <form action ="{% url 'url_createmusica'%}" method="POST">
+                {% csrf_token %}
+                <p>Qual instrumento da música deseja aprender?</p>
+                <input type="hidden" name="id_musica" value="{{musica.id}}">
+                <input type="hidden" name="nome_banda" value="{{musica.artist.name}}">
+                <input type="hidden" name="nome_musica" value="{{musica.title}}">
+                <input type="hidden" name="duracao" value="{{musica.duration}}">
+                <input type="hidden" name="bpm" value="{{musica.bpm}}">
+                <input type="checkbox" name="instrumento" value="Guitarra">Guitarra</input>
+                <input type="checkbox" name="instrumento" value="Violao">Violão</input><br><br>
+                <button type="submit">Adicionar música na lista de aprendizado</button>
+            </form>
+        </div>
+    </div>
+
+    <a href="{% url 'url_home' %}?pesquisa={{musica.artist.name}}">Voltar</a>
+</body>
+</html>
