@@ -7,7 +7,7 @@ class MusicasAprender(models.Model):
         ('Guitarra','Guitarra'),
         ('Violao','Violão'),
     )
-
+    capa_album = models.ImageField()
     nome_banda = models.CharField(max_length=40)
     nome_musica = models.CharField(max_length=40)
     duracao = models.IntegerField()

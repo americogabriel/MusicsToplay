@@ -8,20 +8,28 @@
 <body>
     
         <h1>Pesquise seu artista</h1>
-        <form method="GET">
-            {% csrf_token %}
-            <input type="text" name="pesquisa" placeholder="Pesquise por um artista ou música">
-            <button type="submit">Pesquisar</button>
-        </form>
-
+        <div class="pagina-home">
+            <a href="{% url 'url_listmusicas' %}">Perfil</a>
+        <div class="barra-pesquisa">
+            <form method="GET">
+                {% csrf_token %}
+                <input type="text" name="pesquisa" placeholder="Pesquise por um artista ou música">
+                <button type="submit">Pesquisar</button>
+            </form>
+        </div>
+        </div>
+        <!-- se tiver recebendo valores query de pesquisa -->
         {% if musicas %}
-        <div class="caixa-musica">
+        <div class="container">
             {% for musica in musicas.data%} <!--pega o dicionario com o response da API(musicas) e acessa a lista chamada "data" que é onde as músicas estão -->
+            <div class="caixa-musica">
                 <a href="{%url 'url_perfilmusica' musica.id%}"><img src="{{musica.album.cover}}" alt="{{musica.album.title}}"></a> <br>
                 
                 {{musica.title}} -
                 {{musica.artist.name}}<br>
+            </div>
             {% endfor %}
+           <a href="{% url 'url_home' %}">Voltar para pagina principal</a>
         </div>
         {% endif %}
     

@@ -26,7 +26,11 @@ class PerfilMusica(View):
     def get(self,request,*args,**kwargs):
         query = kwargs.get('id') # pego o id da musica que foi enviado pela url e armazenado no kwargs da requisição(exemplo -> {'id':21312}) 
         response = requests.get(f"https://api.deezer.com/track/{query}")
-        context = {'musica' : response.json()}
+        context = {}
+        context['musica'] = response.json()
+        # chave musica com seus valores
+        context['musica']['bpm'] = float(context['musica']['bpm'])# alterando o valor de bpm de string para float
+        context['musica']['bpm'] = round(int(context['musica']['bpm'])) # alterando de float para int e arredondando o valor
         return render(request,'cifras/perfilmusica.html',context)
     
 
@@ -34,6 +38,7 @@ class PerfilMusica(View):
 class CreateMusicasAprender(View):
     def post(self,request,*args,**kwargs):
         id_musica = request.POST.get('id_musica')
+        capa_album = request.POST.get('imagem_album')
         nome_banda = request.POST.get('nome_banda')
         nome_musica = request.POST.get('nome_musica')
         duracao = request.POST.get('duracao')
@@ -41,7 +46,7 @@ class CreateMusicasAprender(View):
         bpm = round(bpm) # aqui pegamos esse float e arredondamos para cima, tornando ela um INT(nosso campo "bpm" do model só aceita valores inteiros)
         instrumento = request.POST.get('instrumento')
 
-        obj = MusicasAprender.objects.create(nome_banda = nome_banda,nome_musica = nome_musica, duracao = duracao, bpm = bpm, instrumento = instrumento)
+        obj = MusicasAprender.objects.create(capa_album = capa_album,nome_banda = nome_banda,nome_musica = nome_musica, duracao = duracao, bpm = bpm, instrumento = instrumento)
         if obj:
             return redirect("url_perfilmusica",id = id_musica)
     

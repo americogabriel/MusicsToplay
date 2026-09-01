@@ -20,6 +20,7 @@
                 {% csrf_token %}
                 <p>Qual instrumento da música deseja aprender?</p>
                 <input type="hidden" name="id_musica" value="{{musica.id}}">
+                <input type="hidden" name="imagem_album" value="{{musica.album.cover}}">
                 <input type="hidden" name="nome_banda" value="{{musica.artist.name}}">
                 <input type="hidden" name="nome_musica" value="{{musica.title}}">
                 <input type="hidden" name="duracao" value="{{musica.duration}}">
