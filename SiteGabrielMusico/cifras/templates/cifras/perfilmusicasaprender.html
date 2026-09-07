@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{musica.nome_musica}}</title>
+</head>
+<body>
+    <div class="caixa-musica">
+        <img src="{{musica.capa_album}}" alt="{{musica.nome_musica}}"><br>
+        Artista: <h3>{{musica.nome_banda}}</h3>
+        Obra: <h3>{{musica.nome_musica}}</h3>
+        Duração(em segundos): <h3>{{musica.duracao}}</h3>
+        BPM: <h3>{{musica.bpm}}</h3>
+        Instrumento para aprendizado: <h3>{{musica.instrumento}}</h3>
+        <div class="musica-aprendida">
+            <form action="{% url 'url_createmusicasaprendidas'%}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="id_musica" value="{{musica.id}}">
+                <p>de 0 a 5, o quão bem executado você toca essa música?</p>
+                <input type="checkbox" name="dominio" value="0">nível 0</input>
+                <input type="checkbox" name="dominio" value="1">nível 1</input>
+                <input type="checkbox" name="dominio" value="2">nível 2</input>
+                <input type="checkbox" name="dominio" value="3">nível 3</input>
+                <input type="checkbox" name="dominio" value="4">nível 4</input>
+                <input type="checkbox" name="dominio" value="5">nível 5</input>
+                <br>
+                <button type="submit">Aprendi a música!!</button>
+            </form>
+        </div>
+    </div>
+    <a href="{% url 'url_listmusicasaprender'%}">Voltar</a>
+</body>
+</html>

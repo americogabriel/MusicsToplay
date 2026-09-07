@@ -6,28 +6,52 @@
     <title>Musicas para aprender</title>
 </head>
 <body>
+    <h1>Perfil do Músico</h1>
+    <p>Bem vindo ao seu perfil, aqui você pode desbravar músicas que deseja aprender e músicas que já está dominando</p>
+    <a href="{% url 'url_perfiluser' %}?filtro=musicasaprender">Músicas que desejo aprender</a><br><br>
+    <a href="{% url 'url_perfiluser' %}?filtro=musicasaprendidas">Músicas que aprendi</a>
     <div class="pagina">
-        <div class="menu">
-            <h1>Filtro por instrumento:</h1>
-            <a href="{% url 'url_listmusicas'%}?q=Guitarra">Guitarra</a>
-            <a href="{% url 'url_listmusicas'%}?q=Violao">Violao</a>
-            <a href="{% url 'url_listmusicas'%}">Limpar Filtro</a>
-        </div>
-        {% for musica in musicas %}
-        <div class="caixa-musica">
-            <hr></hr>
-            <img src="{{musica.capa_album}}" alt="{{musica.title}}">
-            <h4>Nome da banda: </h4>{{musica.nome_banda}} 
-            <h4>Nome da música: </h4>{{musica.nome_musica}}
-            <h4>Duração da música: </h4>{{musica.duracao}}
-            <h4>Tom da música: </h4>{{musica.tom_musica}}
-            <h4>Instrumento para aprender: </h4>{{musica.instrumento}} <br><br>
-            <a href="{% url 'url_updatemusicas' musica.id %}">Atualizar informações da musica | </a>
+        
+    {%if model == "MusicasAprender" %}
+        
+            <div class="menu">
+                <h4>Filtro por instrumento:</h4>
+                <a href="{% url 'url_listmusicasaprender'%}?q=Guitarra">Guitarra</a>
+                <a href="{% url 'url_listmusicasaprender'%}?q=Violao">Violao</a>
+                <a href="{% url 'url_listmusicasaprender'%}">Limpar Filtro</a>
+            </div>
+            {% for musica in musicas_aprender %}
+            <div class="caixa-musica">
+                <hr></hr>
+                <a href="{% url 'url_perfilmusicaaprender' musica.id %}"><img src="{{musica.capa_album}}" alt="{{musica.title}}"></a>
+                <h4>Nome da banda: </h4>{{musica.nome_banda}} 
+                <h4>Nome da música: </h4>{{musica.nome_musica}} <br><br>
+
+                <a href="{% url 'url_deletemusicas' musica.id %}">Excluir musica da lista de musicas</a>
+            </div>
+            {% endfor %}
             
-            <a href="{% url 'url_deletemusicas' musica.id %}">Excluir musica da lista de musicas</a>
+    {% elif model == "MusicasAprendidas" %}
+        
+            <div class="menu">
+                <h1>Filtro por instrumento:</h1>
+                <a href="{% url 'url_listmusicasaprendidas'%}?q=Guitarra">Guitarra</a>
+                <a href="{% url 'url_listmusicasaprendidas'%}?q=Violao">Violao</a>
+                <a href="{% url 'url_listmusicasaprendidas'%}">Limpar Filtro</a>
+            </div>
+            {% for musica_aprendida in musicas_aprendidas %}
+            <div class="caixa-musica">
+                <hr></hr>
+                <img src="{{musica_aprendida.musica.capa_album}}" alt="{{musica_aprendida.musica.title}}">
+                <h4>Nome da banda: </h4>{{musica_aprendida.musica.nome_banda}} 
+                <h4>Nome da música: </h4>{{musica_aprendida.musica.nome_musica}} 
+                <h4>duração: </h4>{{musica_aprendida.musica.duracao}}<p>Segundos</p> 
+                <h4>bpm: </h4>{{musica_aprendida.musica.bpm}} <br><br>
+                <h4>dominio: </h4>{{musica_aprendida.dominio}}⭐ <br><br>
+
+            {% endfor %}
+    {% endif %}
+            <a href="{% url 'url_home' %}">Voltar para home</a>
         </div>
-        {% endfor %}
-        <a href="{% url 'url_home' %}">Voltar para home</a>
-    </div>
 </body>
 </html>

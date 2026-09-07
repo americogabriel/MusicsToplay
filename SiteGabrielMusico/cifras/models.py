@@ -2,7 +2,7 @@ from django.db import models
 
 class MusicasAprender(models.Model):
 
-    # tupla de escolhas
+    # tupla de escolhas(o primeiro valor é o valor armazenado no campo e o segundo é o valor que aparece para usuário quando consultado pelo próprio)
     INSTRUMENTO_CHOICES = (
         ('Guitarra','Guitarra'),
         ('Violao','Violão'),
@@ -22,10 +22,11 @@ class MusicasAprender(models.Model):
     def __str__(self):
         return self.nome_musica
 
-class Favorita(models.Model):
+class MusicasAprendidas(models.Model):
 
     # tupla de escolhas
     DIFICULTADE_CHOICES = (
+        (0,0),
         (1,1),
         (2,2),
         (3,3),
@@ -33,14 +34,14 @@ class Favorita(models.Model):
         (5,5),
     )
 
-    musica_favorita = models.ForeignKey(MusicasAprender,on_delete=(models.CASCADE))
-    dificuldade = models.IntegerField(choices=DIFICULTADE_CHOICES) # usa a tupla de escolhas para limitar os valoes a somente os que estão na tupla, que nem o campo instrumento da classe MusicaAprender
+    musica = models.ForeignKey(MusicasAprender,on_delete=models.SET_NULL, null = True) # models.SET_NULL permite o objeto referenciado ser apagado, quando apagado, objeto que o referencia tera o campo musica substituido por NULL
+    dominio = models.IntegerField(choices=DIFICULTADE_CHOICES) # usa a tupla de escolhas para limitar os valoes a somente os que estão na tupla, que nem o campo instrumento da classe MusicaAprender
 
-    ## classe Meta
+    # classe Meta
     class Meta:
-        verbose_name_plural = "Favoritas" # o atributo verbose_name_plural controla como o nome vai ficar no plural quando for pro painel django admin
+        verbose_name_plural = "MusicasAprendidas" # o atributo verbose_name_plural controla como o nome vai ficar no plural quando for pro painel django admin
 
-    ## def __str__ é um método que retorna o titulo de cada objeto no painel do django admin, podemos modificar esse titulo colocando o valor de qualquer atributo do model(neste caso foi o atributo nome_musica da classe MusicasViolao)
+    # def __str__ é um método que retorna o titulo de cada objeto no painel do django admin, podemos modificar esse titulo colocando o valor de qualquer atributo do model(neste caso foi o atributo nome_musica da classe MusicasViolao)
     def __str__(self):
-        return super().nome_favorita.nome_musica
+        return self.musica.nome_musica
     
