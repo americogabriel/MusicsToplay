@@ -9,7 +9,7 @@
     <h1>Você deseja remover essa musica de sua lista?</h1>
     <form method="POST">
         {% csrf_token %}
-        <button type="submit">Sim</button> <a href="{% url 'url_listmusicas'%}">Não</a>
+        <button type="submit">Sim</button> <a href="{% url 'url_listmusicasaprender' %}">Não</a>
     </form>
 </body>
 </html>

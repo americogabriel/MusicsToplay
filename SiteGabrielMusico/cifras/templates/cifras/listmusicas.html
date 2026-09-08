@@ -20,36 +20,44 @@
                 <a href="{% url 'url_listmusicasaprender'%}?q=Violao">Violao</a>
                 <a href="{% url 'url_listmusicasaprender'%}">Limpar Filtro</a>
             </div>
-            {% for musica in musicas_aprender %}
-            <div class="caixa-musica">
-                <hr></hr>
-                <a href="{% url 'url_perfilmusicaaprender' musica.id %}"><img src="{{musica.capa_album}}" alt="{{musica.title}}"></a>
-                <h4>Nome da banda: </h4>{{musica.nome_banda}} 
-                <h4>Nome da música: </h4>{{musica.nome_musica}} <br><br>
+            {% if objeto %}
+                {% for musica in musicas_aprender %}
+                    <div class="caixa-musica">
+                        <hr></hr>
+                        <a href="{% url 'url_perfilmusicaaprender' musica.id %}"><img src="{{musica.capa_album}}" alt="{{musica.title}}"></a>
+                        <h4>Nome da banda: </h4>{{musica.nome_banda}} 
+                        <h4>Nome da música: </h4>{{musica.nome_musica}} <br><br>
 
-                <a href="{% url 'url_deletemusicas' musica.id %}">Excluir musica da lista de musicas</a>
-            </div>
-            {% endfor %}
-            
+                        <a href="{% url 'url_deletemusicas' musica.id %}">Excluir musica da lista de musicas</a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Nenhuma música para aprender adicionada.</p>
+            {% endif %}
+                    
     {% elif model == "MusicasAprendidas" %}
         
             <div class="menu">
-                <h1>Filtro por instrumento:</h1>
+                <h4>Filtro por instrumento:</h4>
                 <a href="{% url 'url_listmusicasaprendidas'%}?q=Guitarra">Guitarra</a>
                 <a href="{% url 'url_listmusicasaprendidas'%}?q=Violao">Violao</a>
                 <a href="{% url 'url_listmusicasaprendidas'%}">Limpar Filtro</a>
             </div>
-            {% for musica_aprendida in musicas_aprendidas %}
-            <div class="caixa-musica">
-                <hr></hr>
-                <img src="{{musica_aprendida.musica.capa_album}}" alt="{{musica_aprendida.musica.title}}">
-                <h4>Nome da banda: </h4>{{musica_aprendida.musica.nome_banda}} 
-                <h4>Nome da música: </h4>{{musica_aprendida.musica.nome_musica}} 
-                <h4>duração: </h4>{{musica_aprendida.musica.duracao}}<p>Segundos</p> 
-                <h4>bpm: </h4>{{musica_aprendida.musica.bpm}} <br><br>
-                <h4>dominio: </h4>{{musica_aprendida.dominio}}⭐ <br><br>
-
-            {% endfor %}
+            {% if objeto %}
+                {% for musica_aprendida in musicas_aprendidas %}
+                    <div class="caixa-musica">
+                        <hr></hr>
+                        <img src="{{musica_aprendida.musica.capa_album}}" alt="{{musica_aprendida.musica.title}}">
+                        <h4>Nome da banda: </h4>{{musica_aprendida.musica.nome_banda}} 
+                        <h4>Nome da música: </h4>{{musica_aprendida.musica.nome_musica}} 
+                        <h4>duração: </h4>{{musica_aprendida.musica.duracao}}<p>Segundos</p> 
+                        <h4>bpm: </h4>{{musica_aprendida.musica.bpm}} <br><br>
+                        <h4>dominio: </h4>{{musica_aprendida.dominio}}⭐ <br><br>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Nenhuma música para aprender adicionada.</p>
+            {% endif %}
     {% endif %}
             <a href="{% url 'url_home' %}">Voltar para home</a>
         </div>

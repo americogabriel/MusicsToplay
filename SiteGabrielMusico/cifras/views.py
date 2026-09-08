@@ -70,7 +70,7 @@ class ListMusicasAprender(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['model'] = "MusicasAprender"
-
+        context['objeto'] = self.object_list # object_list salva o retorno do get_queryset, guarda os objetos a serem listados no template. Se estiver vazio o template verifica e exibe uma mensagem
         return context
 
 # para atualizar o objeto "MusicasAprender"
@@ -78,7 +78,7 @@ class UpdateMusicasAprender(UpdateView):
     model = MusicasAprender
     fields = ['nome_banda','nome_musica','duracao','bpm','instrumento']
     template_name = 'cifras/updateMusicas.html'
-    success_url = reverse_lazy('url_listmusicas')
+    success_url = reverse_lazy('url_listmusicasaprender')
 
 # view para detalhes de um objeto "MusicasAprender"
 class PerfilMusicaAprender(DetailView):
@@ -90,7 +90,7 @@ class PerfilMusicaAprender(DetailView):
 class DeleteMusicasAprender(DeleteView):
     model = MusicasAprender
     template_name = 'cifras/deletemusicas.html'
-    success_url = reverse_lazy('url_listmusicas')
+    success_url = reverse_lazy('url_listmusicasaprender')
 
 #------------ Views para model MusicasAprendidas ------------
 
@@ -121,7 +121,7 @@ class ListMusicasAprendidas(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['model'] = "MusicasAprendidas"
-
+        context['objeto'] = self.object_list # object_list salva o retorno do get_queryset, guarda os objetos a serem listados no template. Se estiver vazio o template verifica e exibe uma mensagem
         return context
 
 
