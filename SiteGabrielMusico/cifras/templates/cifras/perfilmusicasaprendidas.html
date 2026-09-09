@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="caixa-musica">
+        <img src="{{musica_aprendida.musica.capa_album}}" alt="{{musica_aprendida.musica.nome_musica}}"><br>
+        Artista: <h3>{{musica_aprendida.musica.nome_banda}}</h3>
+        Obra: <h3>{{musica_aprendida.musica.nome_musica}}</h3>
+        Duração(em segundos): <h3>{{musica_aprendida.musica.duracao}}</h3>
+        BPM: <h3>{{musica_aprendida.musica.bpm}}</h3>
+        Instrumento aprendido: <h3>{{musica_aprendida.musica.instrumento}}</h3>
+        Nível de domínio ao tocar: <h3>{{musica_aprendida.dominio}} ⭐</h3>
+        <a href="{% url 'url_musicaaprendidadelete' musica_aprendida.id %}">Excluir</a>
+    </div>
+    <a href="{% url 'url_listmusicasaprendidas' %}">Voltar</a>
+</body>
+</html>

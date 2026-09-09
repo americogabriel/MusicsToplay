@@ -28,6 +28,8 @@
                 <button type="submit">Aprendi a música!!</button>
             </form>
         </div>
+
+        <a href="{% url 'url_deletemusicas' musica.id %}">Excluir musica da lista de musicas para aprender</a>
     </div>
     <a href="{% url 'url_listmusicasaprender'%}">Voltar</a>
 </body>

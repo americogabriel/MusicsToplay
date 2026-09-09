@@ -20,6 +20,7 @@ class MusicasAprender(models.Model):
 
     ## def __str__ é um método que retorna o titulo de cada objeto no painel do django admin, podemos modificar esse titulo colocando o valor de qualquer atributo do model(neste caso foi o atributo nome_musica)
     def __str__(self):
+        
         return self.nome_musica
 
 class MusicasAprendidas(models.Model):
@@ -41,7 +42,9 @@ class MusicasAprendidas(models.Model):
     class Meta:
         verbose_name_plural = "MusicasAprendidas" # o atributo verbose_name_plural controla como o nome vai ficar no plural quando for pro painel django admin
 
-    # def __str__ é um método que retorna o titulo de cada objeto no painel do django admin, podemos modificar esse titulo colocando o valor de qualquer atributo do model(neste caso foi o atributo nome_musica da classe MusicasViolao)
+    
     def __str__(self):
+        if self.musica is None:
+            return "Referencia Apagada" # se musica for None quer dizer que o objeto referenciado no campo ForeignKey foi apagado
         return self.musica.nome_musica
     

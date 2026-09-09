@@ -28,7 +28,6 @@
                         <h4>Nome da banda: </h4>{{musica.nome_banda}} 
                         <h4>Nome da música: </h4>{{musica.nome_musica}} <br><br>
 
-                        <a href="{% url 'url_deletemusicas' musica.id %}">Excluir musica da lista de musicas</a>
                     </div>
                 {% endfor %}
             {% else %}
@@ -47,11 +46,9 @@
                 {% for musica_aprendida in musicas_aprendidas %}
                     <div class="caixa-musica">
                         <hr></hr>
-                        <img src="{{musica_aprendida.musica.capa_album}}" alt="{{musica_aprendida.musica.title}}">
+                        <a href="{% url 'url_perfilmusicaaprendida' musica_aprendida.id %}"><img src="{{musica_aprendida.musica.capa_album}}" alt="{{musica_aprendida.musica.title}}"></a>
                         <h4>Nome da banda: </h4>{{musica_aprendida.musica.nome_banda}} 
                         <h4>Nome da música: </h4>{{musica_aprendida.musica.nome_musica}} 
-                        <h4>duração: </h4>{{musica_aprendida.musica.duracao}}<p>Segundos</p> 
-                        <h4>bpm: </h4>{{musica_aprendida.musica.bpm}} <br><br>
                         <h4>dominio: </h4>{{musica_aprendida.dominio}}⭐ <br><br>
                     </div>
                 {% endfor %}

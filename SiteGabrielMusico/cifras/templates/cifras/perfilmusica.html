@@ -16,9 +16,11 @@
             <source src="{{musica.preview}}" type="audio/mpeg">
         </audio> 
         <div class="salvar">
-            <form action ="{% url 'url_createmusica'%}" method="POST">
+            <form action ="{% url 'url_createmusicaaprender'%}" method="POST">
                 {% csrf_token %}
                 <p>Qual instrumento da música deseja aprender?</p>
+                <input type="hidden" name="pagina" value="{{pagina_musica}}">
+                <input type="hidden" name="pesquisa" value="{{pesquisa_user}}">
                 <input type="hidden" name="id_musica" value="{{musica.id}}">
                 <input type="hidden" name="imagem_album" value="{{musica.album.cover_medium}}">
                 <input type="hidden" name="nome_banda" value="{{musica.artist.name}}">

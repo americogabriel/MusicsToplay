@@ -9,7 +9,12 @@
     <h1>Você deseja remover essa musica de sua lista?</h1>
     <form method="POST">
         {% csrf_token %}
-        <button type="submit">Sim</button> <a href="{% url 'url_listmusicasaprender' %}">Não</a>
+        <button type="submit">Sim</button> 
+        {% if musica_aprender %}
+            <a href="{% url 'url_listmusicasaprender' %}">Não</a>
+        {% elif musica_aprendida %}
+            <a href="{% url 'url_listmusicasaprendidas' %}">Não</a>
+        {% endif %}
     </form>
 </body>
 </html>

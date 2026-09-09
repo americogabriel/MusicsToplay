@@ -1,9 +1,10 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from django.urls import reverse_lazy
+from django.urls import reverse,reverse_lazy
 from .models import MusicasAprender,MusicasAprendidas
 from django.views.generic import View,CreateView,ListView,UpdateView,DeleteView,DetailView
 import requests #biblioteca para requisições http, vamos usar para fazer requisições na nossa api do deezer
-from django.http import HttpResponse
+from urllib.parse import urlencode 
+
 
 # pagina Home/listagem dos resultados 
 class Home(View):
@@ -41,9 +42,11 @@ class PerfilMusica(View):
         # acessa o dicionário musica e sua chave 'bpm'
         context['musica']['bpm'] = float(context['musica']['bpm'])# alterando o valor de bpm de string para float
         context['musica']['bpm'] = round(int(context['musica']['bpm'])) # alterando de float para int e arredondando o valor
+
         # valores enviados pela query da URL
         context['pagina_musica'] = self.request.GET.get('pagina') # pega o valor pagina enviada pela query, que contém a página que o usuário estava antes de abrir a música
         context['pesquisa_user'] = self.request.GET.get('pesquisa') # pega o valor pesquisa enviado pela query, que contém a pesquisa que o usuário fez para encontrar aquela música
+
         return render(request,'cifras/perfilmusica.html',context)
     
 #------------ VIEWS PARA MODEL MusicasAprender ------------
@@ -51,18 +54,27 @@ class PerfilMusica(View):
 # view que cria um objeto "MusicasAprender"
 class CreateMusicasAprender(View):
     def post(self,request,*args,**kwargs):
-        id_musica = request.POST.get('id_musica')
-        capa_album = request.POST.get('imagem_album')
-        nome_banda = request.POST.get('nome_banda')
-        nome_musica = request.POST.get('nome_musica')
-        duracao = request.POST.get('duracao')
-        bpm = float(request.POST.get('bpm')) # o campo bpm chega como uma string que guarda um número decimal e nós transformamos em float
+        id_musica = self.request.POST.get('id_musica')
+        capa_album = self.request.POST.get('imagem_album')
+        nome_banda = self.request.POST.get('nome_banda')
+        nome_musica = self.request.POST.get('nome_musica')
+        duracao = self.request.POST.get('duracao')
+        bpm = float(self.request.POST.get('bpm')) # o campo bpm chega como uma string que guarda um número decimal e nós transformamos em float
         bpm = round(bpm) # aqui pegamos esse float e arredondamos para cima, tornando ela um INT(nosso campo "bpm" do model só aceita valores inteiros)
-        instrumento = request.POST.get('instrumento')
+        instrumento = self.request.POST.get('instrumento')
 
         obj = MusicasAprender.objects.create(capa_album = capa_album,nome_banda = nome_banda,nome_musica = nome_musica, duracao = duracao, bpm = bpm, instrumento = instrumento)
+
         if obj:
-            return redirect("url_perfilmusica",id = id_musica)
+            caminho_perfilmusica = reverse('url_perfilmusica',kwargs={'id': id_musica}) # usa a função reverse para pegar o caminho da URL que tem o nome programado igual a 'url_perfilmusica', informando o name da URL e o valor a ser armazenado no Kwargs <int:id>
+
+            # usa a função python(urlencode) para codificar o dicionario para ser usado como querystring, para mandar no redirect os valores que a view PerfilMusica precisa(pagina e pesquisa)
+            parametros_url = urlencode({
+                'pagina' : self.request.POST.get('pagina'), # pega os parametro da pagina em que o usuário estava enviada no formulário
+                'pesquisa': self.request.POST.get('pesquisa') # pega o parametro da pesquisa que o usuário fez 
+            })
+
+            return redirect(f"{caminho_perfilmusica}?{parametros_url}") # volta para a pagina de perfil da música, mandando todo os parametros necessário para a view PerfilMusica funcionar perfeitamente
         
 # View para listar todos os objetos "MusicasAprender"        
 class ListMusicasAprender(ListView):
@@ -103,6 +115,12 @@ class DeleteMusicasAprender(DeleteView):
     template_name = 'cifras/deletemusicas.html'
     success_url = reverse_lazy('url_listmusicasaprender')
 
+    def  get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['musica_aprender'] = "model_musica_aprender" # especifica para o template que o model que acessa é o MusicasAprender
+
+        return context
+
 #------------ Views para model MusicasAprendidas ------------
 
 # para criar um objeto MusicasAprendida
@@ -135,7 +153,25 @@ class ListMusicasAprendidas(ListView):
         context['objeto'] = self.object_list # object_list salva o retorno do get_queryset, guarda os objetos a serem listados no template. Se estiver vazio o template verifica e exibe uma mensagem
         return context
 
+# class para detalhe de uma música aprendida
+class MusicaAprendidaDetail(DetailView):
+    model = MusicasAprendidas
+    template_name = 'cifras/perfilmusicasaprendidas.html'
+    context_object_name = 'musica_aprendida'
 
+# class para excluir uma música aprendida
+class MusicaAprendidaDelete(DeleteView):
+    model = MusicasAprendidas
+    template_name = 'cifras/deletemusicas.html'
+    success_url = reverse_lazy('url_listmusicasaprendidas')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['musica_aprendida'] = "model_musica_aprendida" # especifica para o template que o model que acessa é o MusicasAprendidas
+
+        return context
+
+#------------ View para Perfil do Usuário ------------
 class PerfilUser(View):
     def get(self,request,*args,**kwargs):
         if request.GET.get('filtro') == "musicasaprendidas":
