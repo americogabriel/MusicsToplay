@@ -10,14 +10,22 @@ class Home(View):
     # usa somente o method GET e usa o if para indentificar se é uma requisição com pesquisa enviada ou o usuário está na tela inicial de pesquisa
     def get(self,request,*args,**kwargs):
         
-        if request.GET.get('pesquisa'):
-            # quando enviar a pesquisa e o request receber pelo método POST a pesquisa, ele pega adiciona a pesquisa na API
-            query = request.GET.get('pesquisa')
-            response = requests.get(f"https://api.deezer.com/search?q={query}")
+        if request.GET.get('pesquisa') and request.GET.get('pagina'):
+            # quando enviar a pesquisa e a página o request recebe pelo método GET, ele acessa os valores e faz a requisição
+            pagina = request.GET.get('pagina')
+            pesquisa = request.GET.get('pesquisa')
+            response = requests.get(f"https://api.deezer.com/search?q={pesquisa}&index={pagina}")
 
             # cria um contexto que contém a resposta da API com o resultado da busca, e através do render envia elas para o template renderizar
             context = {}
             context['musicas'] = response.json() # pega a resposta retornada pela API em formato JSON e transforma ela em algum tipo python(lista,dicionario,string,etc) para facilitar a manipulçao do arquivo json, no nosso caso foi transformado em um dicionario
+
+            # manda a pesquisa feita pelo usuário e a página atual em que se encontra os resultados para o template, para o botao de "proxima pagina" no template funcionar
+            context['pesquisa'] = pesquisa
+            context['pagina'] = int(pagina) # salva no contexto a pagina atual
+            context['prox_pagina'] = int(pagina) + 25 # salva no contexto a proxima página
+            context['pagina_anterior'] = int(pagina) - 25 # salva no contexto a página anterior
+
             return render(request,"cifras/home.html",context)
         else:
             # renderiza somente o template da barra de pesquisa
@@ -33,6 +41,9 @@ class PerfilMusica(View):
         # acessa o dicionário musica e sua chave 'bpm'
         context['musica']['bpm'] = float(context['musica']['bpm'])# alterando o valor de bpm de string para float
         context['musica']['bpm'] = round(int(context['musica']['bpm'])) # alterando de float para int e arredondando o valor
+        # valores enviados pela query da URL
+        context['pagina_musica'] = self.request.GET.get('pagina') # pega o valor pagina enviada pela query, que contém a página que o usuário estava antes de abrir a música
+        context['pesquisa_user'] = self.request.GET.get('pesquisa') # pega o valor pesquisa enviado pela query, que contém a pesquisa que o usuário fez para encontrar aquela música
         return render(request,'cifras/perfilmusica.html',context)
     
 #------------ VIEWS PARA MODEL MusicasAprender ------------

@@ -13,25 +13,38 @@
         <div class="barra-pesquisa">
             <form method="GET">
                 {% csrf_token %}
+                <input type="hidden" name="pagina" value="0">
                 <input type="text" name="pesquisa" placeholder="Pesquise por um artista ou música">
                 <button type="submit">Pesquisar</button>
             </form>
         </div>
         </div>
+
+    <!--Se tiver sido enviado o resultado de uma requisição para o template, exibe o quadro abaixo-->    
+    {% if musicas %}
+        <!--Verifica a chave total da requisição, ela guarda o número de resultados daquela requisição-->
+        {% if musicas.total == 0 %}
+            <p>Não foram encontrada músicas com esse título ou artista.</p>
         <!-- se tiver recebendo valores query de pesquisa -->
-        {% if musicas %}
-        <div class="container">
-            {% for musica in musicas.data%} <!--pega o dicionario com o response da API(musicas) e acessa a lista chamada "data" que é onde as músicas estão -->
-            <div class="caixa-musica">
-                <a href="{%url 'url_perfilmusica' musica.id%}"><img src="{{musica.album.cover}}" alt="{{musica.album.title}}"></a> <br>
-                
-                {{musica.title}} -
-                {{musica.artist.name}}<br>
+        {% else %}
+            <div class="container">
+                {% for musica in musicas.data%} <!--pega o dicionario com o response da API(musicas) e acessa a lista chamada "data" que é onde as músicas estão -->
+                <div class="caixa-musica">
+                    <a href="{%url 'url_perfilmusica' musica.id%}?pesquisa={{pesquisa}}&pagina={{pagina}}"><img src="{{musica.album.cover}}" alt="{{musica.album.title}}"></a> <br>
+                    
+                    {{musica.title}} -
+                    {{musica.artist.name}}<br>
+                </div>
+                {% endfor %}
+            <a href="{% url 'url_home'%}?pesquisa={{pesquisa}}&pagina={{prox_pagina}}">Proxima Página</a> | <!-- Link para a view home, mandando um novo valor "pagina" com o search atual para acessar a proxima página de resultados -->
+            <!-- Se a página atual for igual a 25 ou maior, exibe o link de página anterior(porque as paginas pulam de 25 em 25)-->
+            {% if pagina > 0 %}
+                <a href="{% url 'url_home'%}?pesquisa={{pesquisa}}&pagina={{pagina_anterior}}">Página Anterior</a><br> <!-- Link para a view home, mandando na "pagina" o valor da página anterior, assim a view fará enviará para o template uma requisição com a página anterior -->
+            {% endif %} 
+            <a href="{% url 'url_home' %}">Voltar para pagina principal</a>
             </div>
-            {% endfor %}
-           <a href="{% url 'url_home' %}">Voltar para pagina principal</a>
-        </div>
         {% endif %}
+    {% endif %}
     
 </body>
 </html>
