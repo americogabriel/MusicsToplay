@@ -12,7 +12,7 @@ class MusicasAprender(models.Model):
     nome_musica = models.CharField(max_length=40)
     duracao = models.IntegerField()
     bpm = models.IntegerField()
-    instrumento = models.CharField(choices= INSTRUMENTO_CHOICES,default= 'violao') # com o conjunto de tuplas(INSTRUMENTO_CHOICES), usamos o atributo choice para o campo ter somente as opções da tupla como valor e o default dita um valor que caso o campo fique em branco este valor padrão será o valor do campo.
+    instrumento = models.CharField(max_length=8,choices= INSTRUMENTO_CHOICES,default= 'Violao') # com o conjunto de tuplas(INSTRUMENTO_CHOICES), usamos o atributo choice para o campo ter somente as opções da tupla como valor e o default dita um valor que caso o campo fique em branco este valor padrão será o valor do campo.
 
     ## classe Meta
     class Meta:
