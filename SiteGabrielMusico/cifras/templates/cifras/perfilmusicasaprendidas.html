@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,7 +14,8 @@
         BPM: <h3>{{musica_aprendida.musica.bpm}}</h3>
         Instrumento aprendido: <h3>{{musica_aprendida.musica.instrumento}}</h3>
         Nível de domínio ao tocar: <h3>{{musica_aprendida.dominio}} ⭐</h3>
-        <a href="{% url 'url_musicaaprendidadelete' musica_aprendida.id %}">Excluir</a>
+        <a href="{% url 'url_updatemusicasaprendidas' musica_aprendida.id %}">Editar Dominio</a>
+        <a href="{% url 'url_musicaaprendidadelete' musica_aprendida.id %}">Excluir</a> ||
     </div>
     <a href="{% url 'url_listmusicasaprendidas' %}">Voltar</a>
 </body>

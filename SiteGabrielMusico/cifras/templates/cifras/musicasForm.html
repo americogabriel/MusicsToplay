@@ -7,12 +7,17 @@
 </head>
 <body>
     <head>
-        <h1> Formulário da musicas para aprender</h1>
+        <h1> Update Músicas </h1>
     </head>
     <form method="POST">
         {% csrf_token %}
         {{form}}
-        <button type='submit'>Adicionar musica</button>
+        <button type='submit'>Atualizar música</button>
     </form>
+    {% if id_musica_aprender %}
+        <a href="{% url 'url_perfilmusicaaprender' id_musica_aprender %}">Cancelar</a>
+    {% elif id_musica_aprendida %}
+        <a href="{% url 'url_perfilmusicaaprendida' id_musica_aprendida %}">Cancelar</a>
+    {% endif %}
 </body>
 </html>

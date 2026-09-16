@@ -25,10 +25,12 @@
                 <input type="hidden" name="imagem_album" value="{{musica.album.cover_medium}}">
                 <input type="hidden" name="nome_banda" value="{{musica.artist.name}}">
                 <input type="hidden" name="nome_musica" value="{{musica.title}}">
-                <input type="hidden" name="duracao" value="{{musica.duration}}"><p>Segundos</p>    
+                <input type="hidden" name="duracao" value="{{musica.duration}}">  
                 <input type="hidden" name="bpm" value="{{musica.bpm}}">
-                <input type="checkbox" name="instrumento" value="Guitarra">Guitarra</input>
-                <input type="checkbox" name="instrumento" value="Violao">Violão</input><br><br>
+                <select name="instrumento">
+                    <option value="Guitarra">Guitarra</option>
+                    <option value="Violao">Violão</option>
+                </select>
                 <button type="submit">Adicionar música na lista de aprendizado</button>
             </form>
         </div>

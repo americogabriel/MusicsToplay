@@ -1,9 +1,10 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.urls import reverse,reverse_lazy
 from .models import MusicasAprender,MusicasAprendidas
-from django.views.generic import View,CreateView,ListView,UpdateView,DeleteView,DetailView
+from django.views.generic import View,CreateView,ListView,UpdateView,DeleteView,DetailView,FormView
 import requests #biblioteca para requisições http, vamos usar para fazer requisições na nossa api do deezer
 from urllib.parse import urlencode 
+from .forms import MusicaAprenderForm,MusicaAprendidaForm
 
 
 # pagina Home/listagem dos resultados 
@@ -96,12 +97,29 @@ class ListMusicasAprender(ListView):
         context['objeto'] = self.object_list # object_list salva o retorno do get_queryset, guarda os objetos a serem listados no template. Se estiver vazio o template verifica e exibe uma mensagem
         return context
 
-# para atualizar o objeto "MusicasAprender"
-class UpdateMusicasAprender(UpdateView):
-    model = MusicasAprender
-    fields = ['nome_banda','nome_musica','duracao','bpm','instrumento']
-    template_name = 'cifras/updateMusicas.html'
+# para atualizar o campo instrumento do "MusicasAprender"
+class UpdateMusicasAprender(FormView):
+    template_name = 'cifras/musicasForm.html'
+    form_class = MusicaAprenderForm
     success_url = reverse_lazy('url_listmusicasaprender')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs) 
+        context['id_musica_aprender'] = self.kwargs['pk'] # pega o id enviado pela URL e armazenado no kwargs da URL(self.kwargs) e armazena no contexto
+
+        return context # envio o contexto para o template
+    
+    # uso a função que manipula o kwargs do form
+    def get_form_kwargs(self):
+        id = self.kwargs['pk'] # busco no kwargs o id que a view recebeu pela URL
+        kwargs = super().get_form_kwargs()
+        kwargs['instance'] = get_object_or_404(MusicasAprender,pk = id) # escrevo no atributo instance do kwargs uma instancia de objeto existente para ja vir com campos preenchidos
+        return kwargs
+    
+    def form_valid(self, form):
+        form.save() # salva o formulário(no FormView é preciso salvar manualmente, em UpdateView por exemplo, não é necessário)
+        return super().form_valid(form) # retorna
+
 
 # view para detalhes de um objeto "MusicasAprender"
 class PerfilMusicaAprender(DetailView):
@@ -170,6 +188,29 @@ class MusicaAprendidaDelete(DeleteView):
         context['musica_aprendida'] = "model_musica_aprendida" # especifica para o template que o model que acessa é o MusicasAprendidas
 
         return context
+
+
+class MusicaAprendidaUpdate(FormView):
+    template_name = "cifras/musicasForm.html"
+    form_class = MusicaAprendidaForm
+    success_url = reverse_lazy('url_listmusicasaprendidas')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs) 
+        context['id_musica_aprendida'] = self.kwargs['pk'] # pega o id enviado pela URL e armazenado no kwargs da URL(self.kwargs) e armazena no contexto
+
+        return context # envio o contexto para o template
+
+    def get_form_kwargs(self):
+        id = self.kwargs['pk'] # busco no kwargs o id que a view recebeu pela URL
+        kwargs = super().get_form_kwargs()
+        kwargs['instance'] = get_object_or_404(MusicasAprendidas,pk = id)  # escrevo no atributo instance do kwargs uma instancia de objeto existente para ja vir com campos preenchidos
+
+        return kwargs
+
+    def form_valid(self, form):
+        form.save() # salva o formulário(no FormView é preciso salvar manualmente, em UpdateView por exemplo, não é necessário)
+        return super().form_valid(form) 
 
 #------------ View para Perfil do Usuário ------------
 class PerfilUser(View):

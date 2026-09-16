@@ -2,7 +2,7 @@ from django.db import models
 
 class MusicasAprender(models.Model):
 
-    # tupla de escolhas(o primeiro valor é o valor armazenado no campo e o segundo é o valor que aparece para usuário quando consultado pelo próprio)
+    # tupla de escolhas(o primeiro valor é o valor armazenado no banco e o segundo é o valor que aparece para usuário quando consultado pelo próprio)
     INSTRUMENTO_CHOICES = (
         ('Guitarra','Guitarra'),
         ('Violao','Violão'),

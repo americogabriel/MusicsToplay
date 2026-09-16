@@ -18,18 +18,20 @@
                 {% csrf_token %}
                 <input type="hidden" name="id_musica" value="{{musica.id}}">
                 <p>de 0 a 5, o quão bem executado você toca essa música?</p>
-                <input type="checkbox" name="dominio" value="0">nível 0</input>
-                <input type="checkbox" name="dominio" value="1">nível 1</input>
-                <input type="checkbox" name="dominio" value="2">nível 2</input>
-                <input type="checkbox" name="dominio" value="3">nível 3</input>
-                <input type="checkbox" name="dominio" value="4">nível 4</input>
-                <input type="checkbox" name="dominio" value="5">nível 5</input>
+                <select name="dominio">
+                    <option value="0" >0</option>
+                    <option value="1" >1</option>
+                    <option value="2" >2</option>
+                    <option value="3" >3</option>
+                    <option value="4" >4</option>
+                    <option value="5" >5</option>
+                </select>
                 <br>
                 <button type="submit">Aprendi a música!!</button>
             </form>
         </div>
-
-        <a href="{% url 'url_deletemusicas' musica.id %}">Excluir musica da lista de musicas para aprender</a>
+        <a href="{% url 'url_updatemusicas' musica.id %}"> Editar instrumento de aprendizado</a>  ||
+        <a href="{% url 'url_deletemusicas' musica.id %}"> Excluir musica da lista de musicas para aprender</a>
     </div>
     <a href="{% url 'url_listmusicasaprender'%}">Voltar</a>
 </body>
