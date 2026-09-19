@@ -1,38 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{musica.nome_musica}}</title>
-</head>
-<body>
-    <div class="caixa-musica">
-        <img src="{{musica.capa_album}}" alt="{{musica.nome_musica}}"><br>
-        Artista: <h3>{{musica.nome_banda}}</h3>
-        Obra: <h3>{{musica.nome_musica}}</h3>
-        Duração(em segundos): <h3>{{musica.duracao}}</h3>
-        BPM: <h3>{{musica.bpm}}</h3>
-        Instrumento para aprendizado: <h3>{{musica.instrumento}}</h3>
-        <div class="musica-aprendida">
-            <form action="{% url 'url_createmusicasaprendidas'%}" method="POST">
-                {% csrf_token %}
-                <input type="hidden" name="id_musica" value="{{musica.id}}">
-                <p>de 0 a 5, o quão bem executado você toca essa música?</p>
-                <select name="dominio">
-                    <option value="0" >0</option>
-                    <option value="1" >1</option>
-                    <option value="2" >2</option>
-                    <option value="3" >3</option>
-                    <option value="4" >4</option>
-                    <option value="5" >5</option>
-                </select>
-                <br>
-                <button type="submit">Aprendi a música!!</button>
-            </form>
+{% extends 'cifras/base_conta.html' %}
+{% block title %}{{ musica.nome_musica }} · Musics to Play{% endblock %}
+{% block content %}
+<section class="track-page wrap" aria-labelledby="track-title">
+    <a class="text-link" href="{% url 'url_listmusicasaprender' %}">← Músicas para aprender</a>
+    <div class="track-layout">
+        <div class="track-artwork">
+            <div class="song-cover">{% if musica.capa_album_medium or musica.capa_album_small %}<img src="{{ musica.capa_album_medium|default:musica.capa_album_small }}" alt="Capa de {{ musica.nome_musica }}" width="500" height="500">{% else %}<span class="library-cover-placeholder" aria-hidden="true">♫</span>{% endif %}</div>
+            <p class="track-caption">UM ACORDE DE CADA VEZ.</p>
         </div>
-        <a href="{% url 'url_updatemusicas' musica.id %}"> Editar instrumento de aprendizado</a>  ||
-        <a href="{% url 'url_deletemusicas' musica.id %}"> Excluir musica da lista de musicas para aprender</a>
+        <div class="track-info">
+            <span class="eyebrow"><span class="little-line"></span>NA SUA LISTA PARA APRENDER</span>
+            <h1 id="track-title">{{ musica.nome_musica }}</h1>
+            <p class="track-artist">{{ musica.nome_banda }}</p>
+            <dl class="track-facts">
+                <div><dt>Duração</dt><dd>{{ musica.duracao }} <small>segundos</small></dd></div>
+                <div><dt>Andamento</dt><dd>{{ musica.bpm }} <small>BPM</small></dd></div>
+                <div><dt>Instrumento</dt><dd>{{ musica.get_instrumento_display }}</dd></div>
+            </dl>
+            <div class="track-progress">
+                <span class="step-icon green" aria-hidden="true">✓</span>
+                <h2>Mais uma conquista?</h2>
+                <p>Registre o que você aprendeu. Cada passo faz parte da sua evolução.</p>
+                <form action="{% url 'url_createmusicasaprendidas' %}" method="post" class="track-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="id_musica" value="{{ musica.id }}">
+                    <label for="dominio">De 0 a 5, qual é seu domínio ao tocar esta música?</label>
+                    <div class="track-form-actions">
+                        <select name="dominio" id="dominio">
+                            <option value="0">0 de 5</option>
+                            <option value="1">1 de 5</option>
+                            <option value="2">2 de 5</option>
+                            <option value="3">3 de 5</option>
+                            <option value="4">4 de 5</option>
+                            <option value="5">5 de 5</option>
+                        </select>
+                        <button class="button-dark" type="submit">Aprendi a música! <span aria-hidden="true">✓</span></button>
+                    </div>
+                </form>
+            </div>
+            <nav class="track-actions" aria-label="Ações da música">
+                <a class="track-edit" href="{% url 'url_updatemusicas' musica.id %}">Editar instrumento ↗</a>
+                <a class="track-delete" href="{% url 'url_deletemusicas' musica.id %}">Excluir da lista</a>
+            </nav>
+        </div>
     </div>
-    <a href="{% url 'url_listmusicasaprender'%}">Voltar</a>
-</body>
-</html>
+</section>
+{% endblock %}

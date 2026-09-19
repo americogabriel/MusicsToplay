@@ -1,19 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil</title>
-</head>
-<body>
-    <h1>Perfil do Músico</h1>
-    <p>Bem vindo ao seu perfil, aqui você pode desbravar músicas que deseja aprender e músicas que já está dominando</p>
-
-    <div class="caixa">
-    <a href="{% url 'url_perfiluser' %}?filtro=musicasaprender">Músicas que desejo aprender</a><br><br>
-    <a href="{% url 'url_perfiluser' %}?filtro=musicasaprendidas">Músicas que aprendi</a>
+{% extends 'cifras/base_conta.html' %}
+{% block title %}Meu repertório · Musics to Play{% endblock %}
+{% block content %}
+<section class="profile-hero wrap" aria-labelledby="profile-title">
+    <div class="profile-greeting"><span class="profile-avatar" aria-hidden="true">{% if user.is_authenticated %}{{ user.username|first|upper }}{% else %}♫{% endif %}</span><span>{% if user.is_authenticated %}Olá, {% firstof user.first_name user.username %}.{% else %}Boas-vindas ao seu espaço.{% endif %}</span></div>
+    <span class="eyebrow"><span class="little-line"></span>SEU REPERTÓRIO, SUA HISTÓRIA</span>
+    <h1 id="profile-title">Cada música, uma<br>nova <em>conquista.</em></h1>
+    <p class="hero-description">Das músicas que você sonha tocar às que já fazem parte de você. Organize sua jornada e continue aprendendo no seu ritmo.</p>
+</section>
+<section class="profile-library wrap" aria-labelledby="library-title">
+    <div class="section-heading"><h2 id="library-title">Meu repertório</h2><span class="eyebrow">UM ACORDE DE CADA VEZ</span></div>
+    <div class="profile-cards">
+        <a class="profile-card" href="{% url 'url_perfiluser' %}?filtro=musicasaprender"><div class="step-top"><span class="step-icon lilac" aria-hidden="true">♫</span><span class="step-number">01</span></div><h3>Músicas para aprender</h3><p>Aquela favorita que não sai da cabeça. Encontre aqui seus próximos desafios e escolha o que tocar hoje.</p><span class="profile-card-link">Explorar minha lista <span aria-hidden="true">↗</span></span></a>
+        <a class="profile-card" href="{% url 'url_perfiluser' %}?filtro=musicasaprendidas"><div class="step-top"><span class="step-icon green" aria-hidden="true">✓</span><span class="step-number">02</span></div><h3>Músicas aprendidas</h3><p>Cada acorde praticado valeu a pena. Revisite suas conquistas e acompanhe seu domínio de cada música.</p><span class="profile-card-link">Ver minhas conquistas <span aria-hidden="true">↗</span></span></a>
     </div>
-
-    <a href="{% url 'url_home' %}">Voltar</a>
-</body>
-</html>
+</section>
+<section class="closing wrap" aria-labelledby="discover-title"><div><span class="eyebrow">AINDA TEM MUITO SOM PELA FRENTE</span><h2 id="discover-title">Qual vai ser a próxima?</h2><p>Uma nova inspiração pode estar a uma busca de distância.</p></div><a class="button-dark" href="{% url 'url_home' %}#descobrir">Descobrir músicas <span aria-hidden="true">↗</span></a></section>
+{% endblock %}

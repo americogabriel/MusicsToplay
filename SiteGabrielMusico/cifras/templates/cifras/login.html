@@ -1,0 +1,37 @@
+{% extends 'cifras/base_conta.html' %}
+{% block title %}{% if logando %}Entrar{% else %}Criar conta{% endif %} · Musics to Play{% endblock %}
+{% block content %}
+<section class="account-layout wrap" aria-labelledby="account-title">
+    <div class="account-copy">
+        <span class="eyebrow"><span class="little-line"></span>NO SEU TEMPO, NO SEU RITMO</span>
+        <h1 id="account-title">{% if logando %}Seu próximo<br>acorde está <em>aqui.</em>{% else %}Toda história<br>começa com um <em>acorde.</em>{% endif %}</h1>
+        <p class="hero-description">{% if logando %}Entre para reencontrar suas favoritas e continuar construindo um repertório com a sua cara.{% else %}Crie sua conta para organizar as músicas que quer tocar e celebrar tudo o que já aprendeu.{% endif %}</p>
+        <div class="account-record" aria-hidden="true"><div class="account-disc"><span>mtp.</span></div><div class="account-sleeve"><span>UM ESPAÇO PARA SUA MÚSICA</span><strong>menos pressa.<br>mais música.</strong><span>VOL. 01 &nbsp; ♫</span></div></div>
+        <div class="hero-note"><span class="note-icon" aria-hidden="true">♪</span>Do primeiro acorde à sua próxima conquista.</div>
+    </div>
+    <div class="account-panel">
+        <span class="step-icon green" aria-hidden="true">♫</span>
+        <h2>{% if logando %}Bom ter você de volta.{% else %}Vamos começar?{% endif %}</h2>
+        <p class="account-intro">{% if logando %}Entre na sua conta e encontre seu próximo som.{% else %}Seu repertório está esperando por você.{% endif %}</p>
+        <form method="post" class="account-form">
+            {% csrf_token %}
+            {% if form.non_field_errors %}<div class="account-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+            {% if logando and form.is_bound and not form.errors %}<p class="account-errors" role="alert">Não foi possível entrar. Confira seu usuário e sua senha.</p>{% endif %}
+            {% for field in form %}
+                {% if field.is_hidden %}{{ field }}{% else %}
+                <div class="account-field">
+                    <label for="{{ field.id_for_label }}">{% if field.name == 'username' %}Nome de usuário{% elif field.name == 'password' %}Senha{% else %}{{ field.label }}{% endif %}{% if not field.field.required %}<span class="optional-label"> (opcional)</span>{% endif %}</label>
+                    {% if field.name == 'password' %}
+                    <input type="password" name="{{ field.html_name }}" id="{{ field.id_for_label }}" autocomplete="{% if logando %}current-password{% else %}new-password{% endif %}" {% if field.field.required %}required{% endif %} {% if field.errors %}aria-invalid="true"{% endif %} aria-describedby="{{ field.auto_id }}_helptext {{ field.auto_id }}_errors">
+                    {% else %}{{ field }}{% endif %}
+                    <div class="field-help" id="{{ field.auto_id }}_helptext">{% if field.help_text %}{{ field.help_text|safe }}{% endif %}</div>
+                    <div class="field-errors" id="{{ field.auto_id }}_errors" {% if field.errors %}role="alert"{% endif %}>{{ field.errors }}</div>
+                </div>
+                {% endif %}
+            {% endfor %}
+            <button class="button-dark account-submit" type="submit">{% if logando %}Entrar{% else %}Criar conta{% endif %}<span aria-hidden="true">→</span></button>
+        </form>
+        <p class="account-switch">{% if logando %}Ainda não tem uma conta? <a href="{% url 'url_cadastro' %}">Cadastre-se ↗</a>{% else %}Já tem uma conta? <a href="{% url 'url_login' %}">Entrar ↗</a>{% endif %}</p>
+    </div>
+</section>
+{% endblock %}

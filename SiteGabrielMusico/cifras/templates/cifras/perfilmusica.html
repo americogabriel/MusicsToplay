@@ -1,41 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{musica.title}}</title>
-</head>
-<body>
-    <div class="caixa-musica">
-        <img src="{{musica.album.cover}}" alt="{{musica.album.title}}"> <br>
-        <p>Artista: {{musica.artist.name}}</p>
-        <p>Título da obra: {{musica.title}}</p> 
-        <p>Duração: {{musica.duration}} segundos</p> 
-        <p>BPM: {{musica.bpm}}</p>
-        <audio class="audio-player" controls>
-            <source src="{{musica.preview}}" type="audio/mpeg">
-        </audio> 
-        <div class="salvar">
-            <form action ="{% url 'url_createmusicaaprender'%}" method="POST">
-                {% csrf_token %}
-                <p>Qual instrumento da música deseja aprender?</p>
-                <input type="hidden" name="pagina" value="{{pagina_musica}}">
-                <input type="hidden" name="pesquisa" value="{{pesquisa_user}}">
-                <input type="hidden" name="id_musica" value="{{musica.id}}">
-                <input type="hidden" name="imagem_album" value="{{musica.album.cover_medium}}">
-                <input type="hidden" name="nome_banda" value="{{musica.artist.name}}">
-                <input type="hidden" name="nome_musica" value="{{musica.title}}">
-                <input type="hidden" name="duracao" value="{{musica.duration}}">  
-                <input type="hidden" name="bpm" value="{{musica.bpm}}">
-                <select name="instrumento">
-                    <option value="Guitarra">Guitarra</option>
-                    <option value="Violao">Violão</option>
-                </select>
-                <button type="submit">Adicionar música na lista de aprendizado</button>
-            </form>
+{% extends 'cifras/base_conta.html' %}
+{% block title %}{{ musica.title }} · Musics to Play{% endblock %}
+{% block content %}
+<section class="track-page wrap" aria-labelledby="track-title">
+    <a class="text-link" href="{% url 'url_home' %}{% if pesquisa_user %}?pesquisa={{ pesquisa_user|urlencode }}&amp;pagina={{ pagina_musica|default:'0' }}#resultados{% endif %}">← Voltar à busca</a>
+    <div class="track-layout">
+        <div class="track-artwork">
+            <div class="song-cover">{% if musica.album.cover_medium or musica.album.cover %}<img src="{{ musica.album.cover_medium|default:musica.album.cover }}" alt="Capa do álbum {{ musica.album.title }}" width="500" height="500">{% else %}<span class="library-cover-placeholder" aria-hidden="true">♫</span>{% endif %}</div>
+            <p class="track-caption">SEU PRÓXIMO SOM COMEÇA AQUI.</p>
+        </div>
+        <div class="track-info">
+            <span class="eyebrow"><span class="little-line"></span>UMA NOVA INSPIRAÇÃO</span>
+            <h1 id="track-title">{{ musica.title }}</h1>
+            <p class="track-artist">{{ musica.artist.name }}</p>
+            <dl class="track-facts">
+                <div><dt>Duração</dt><dd>{{ musica.duration }} <small>segundos</small></dd></div>
+                <div><dt>Andamento</dt><dd>{{ musica.bpm }} <small>BPM</small></dd></div>
+                <div><dt>Álbum</dt><dd>{{ musica.album.title }}</dd></div>
+            </dl>
+            {% if musica.preview %}
+            <div class="track-preview"><p id="preview-label">Ouça uma prévia</p><audio class="audio-player" controls preload="none" aria-labelledby="preview-label"><source src="{{ musica.preview }}" type="audio/mpeg">Seu navegador não suporta a reprodução de áudio.</audio></div>
+            {% else %}<p class="track-preview">Prévia de áudio indisponível para esta música.</p>{% endif %}
+            <div class="track-progress">
+                <span class="step-icon lilac" aria-hidden="true">♫</span>
+                <h2>Leve esse som com você.</h2>
+                <p>Adicione ao seu repertório e comece a aprender no seu ritmo.</p>
+                <form action="{% url 'url_createmusicaaprender' %}" method="post" class="track-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="user" value="{{ user }}">
+                    <input type="hidden" name="pagina" value="{{ pagina_musica }}">
+                    <input type="hidden" name="pesquisa" value="{{ pesquisa_user }}">
+                    <input type="hidden" name="id_musica" value="{{ musica.id }}">
+                    <input type="hidden" name="imagem_album_medium" value="{{ musica.album.cover_medium }}">
+                    <input type="hidden" name="imagem_album_small" value="{{ musica.album.cover_small }}">
+                    <input type="hidden" name="nome_banda" value="{{ musica.artist.name }}">
+                    <input type="hidden" name="nome_musica" value="{{ musica.title }}">
+                    <input type="hidden" name="duracao" value="{{ musica.duration }}">
+                    <input type="hidden" name="bpm" value="{{ musica.bpm }}">
+                    <label for="instrumento">Qual instrumento você quer aprender?</label>
+                    <div class="track-form-actions"><select name="instrumento" id="instrumento"><option value="Guitarra">Guitarra</option><option value="Violao">Violão</option></select><button class="button-dark" type="submit">Adicionar à lista <span aria-hidden="true">+</span></button></div>
+                </form>
+            </div>
         </div>
     </div>
-
-    <a href="{% url 'url_home' %}?pesquisa={{pesquisa_user}}&pagina={{pagina_musica}}">Voltar</a>
-</body>
-</html>
+</section>
+{% endblock %}

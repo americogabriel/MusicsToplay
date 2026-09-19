@@ -1,22 +1,35 @@
- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <div class="caixa-musica">
-        <img src="{{musica_aprendida.musica.capa_album}}" alt="{{musica_aprendida.musica.nome_musica}}"><br>
-        Artista: <h3>{{musica_aprendida.musica.nome_banda}}</h3>
-        Obra: <h3>{{musica_aprendida.musica.nome_musica}}</h3>
-        Duração(em segundos): <h3>{{musica_aprendida.musica.duracao}}</h3>
-        BPM: <h3>{{musica_aprendida.musica.bpm}}</h3>
-        Instrumento aprendido: <h3>{{musica_aprendida.musica.instrumento}}</h3>
-        Nível de domínio ao tocar: <h3>{{musica_aprendida.dominio}} ⭐</h3>
-        <a href="{% url 'url_updatemusicasaprendidas' musica_aprendida.id %}">Editar Dominio</a>
-        <a href="{% url 'url_musicaaprendidadelete' musica_aprendida.id %}">Excluir</a> ||
+{% extends 'cifras/base_conta.html' %}
+{% block title %}{{ musica_aprendida.musica.nome_musica }} · Musics to Play{% endblock %}
+{% block content %}
+<section class="track-page wrap" aria-labelledby="track-title">
+    <a class="text-link" href="{% url 'url_listmusicasaprendidas' %}">← Músicas aprendidas</a>
+    <div class="track-layout">
+        <div class="track-artwork">
+            <div class="song-cover">{% if musica_aprendida.musica.capa_album_medium or musica_aprendida.musica.capa_album_small %}<img src="{{ musica_aprendida.musica.capa_album_medium|default:musica_aprendida.musica.capa_album_small }}" alt="Capa de {{ musica_aprendida.musica.nome_musica }}" width="500" height="500">{% else %}<span class="library-cover-placeholder" aria-hidden="true">♫</span>{% endif %}</div>
+            <p class="track-caption">ESSA JÁ FAZ PARTE DE VOCÊ.</p>
+        </div>
+        <div class="track-info">
+            <span class="eyebrow"><span class="little-line"></span>MAIS UMA MÚSICA APRENDIDA</span>
+            <h1 id="track-title">{{ musica_aprendida.musica.nome_musica }}</h1>
+            <p class="track-artist">{{ musica_aprendida.musica.nome_banda }}</p>
+            <dl class="track-facts">
+                <div><dt>Duração</dt><dd>{{ musica_aprendida.musica.duracao }} <small>segundos</small></dd></div>
+                <div><dt>Andamento</dt><dd>{{ musica_aprendida.musica.bpm }} <small>BPM</small></dd></div>
+                <div><dt>Instrumento</dt><dd>{{ musica_aprendida.musica.get_instrumento_display }}</dd></div>
+            </dl>
+            <div class="track-progress track-achievement">
+                <span class="step-icon green" aria-hidden="true">✓</span>
+                <h2>A prática vira conquista.</h2>
+                <p>Seu nível de domínio ao tocar esta música.</p>
+                <div class="track-rating"><span aria-hidden="true">★</span><strong>{{ musica_aprendida.dominio }}</strong><span>de 5</span></div>
+                <p>Continue tocando e atualize seu domínio conforme evoluir.</p>
+                <a class="button-dark" href="{% url 'url_updatemusicasaprendidas' musica_aprendida.id %}">Editar domínio <span aria-hidden="true">↗</span></a>
+            </div>
+            <nav class="track-actions" aria-label="Ações da música">
+                <a class="track-edit" href="{% url 'url_listmusicasaprendidas' %}">Ver minhas conquistas ↗</a>
+                <a class="track-delete" href="{% url 'url_musicaaprendidadelete' musica_aprendida.id %}">Excluir da lista</a>
+            </nav>
+        </div>
     </div>
-    <a href="{% url 'url_listmusicasaprendidas' %}">Voltar</a>
-</body>
-</html>
+</section>
+{% endblock %}

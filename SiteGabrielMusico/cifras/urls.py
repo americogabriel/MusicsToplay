@@ -1,9 +1,11 @@
 from django.urls import path
-from .views import Home,CreateMusicasAprender,ListMusicasAprender,UpdateMusicasAprender,DeleteMusicasAprender,PerfilMusica,PerfilMusicaAprender,CreateMusicasAprendidas,ListMusicasAprendidas,PerfilUser,MusicaAprendidaDetail,MusicaAprendidaDelete,MusicaAprendidaUpdate
+from .views import Home,CreateMusicasAprender,ListMusicasAprender,UpdateMusicasAprender,DeleteMusicasAprender,PerfilMusica,PerfilMusicaAprender,CreateMusicasAprendidas,ListMusicasAprendidas,PerfilUser,MusicaAprendidaDetail,MusicaAprendidaDelete,MusicaAprendidaUpdate,Login,Cadastro
 
 urlpatterns = [
     # PATH DA Home
-    path('',Home.as_view(), name = 'url_home'),
+    path('cadastro/',Cadastro.as_view(), name = 'url_cadastro'),
+    path('',Login.as_view(), name = 'url_login'),
+    path('home/',Home.as_view(), name = 'url_home'),
 
     # URL'S DO MODEL MusicasAprendidas
     path('createmusica/',CreateMusicasAprender.as_view(),name = 'url_createmusicaaprender'),

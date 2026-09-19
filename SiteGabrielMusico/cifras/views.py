@@ -1,10 +1,62 @@
 from django.shortcuts import render,redirect,get_object_or_404
+from django.contrib.auth import authenticate,login
 from django.urls import reverse,reverse_lazy
 from .models import MusicasAprender,MusicasAprendidas
 from django.views.generic import View,CreateView,ListView,UpdateView,DeleteView,DetailView,FormView
 import requests #biblioteca para requisições http, vamos usar para fazer requisições na nossa api do deezer
 from urllib.parse import urlencode 
-from .forms import MusicaAprenderForm,MusicaAprendidaForm
+from .forms import MusicaAprenderForm,MusicaAprendidaForm,CadastroUserForm,LoginUserForm
+from django.contrib.auth.models import User
+from django.http import HttpResponse
+
+
+# TRATAR OS DADOS QUE CHEGAM DO FORMULÁRIO PARA CRIAR A CONTA
+class Login(FormView):
+    template_name = "cifras/login.html"
+    form_class = LoginUserForm
+    success_url = reverse_lazy('url_login')
+
+    def get_context_data(self, **kwargs):
+        context =  super().get_context_data(**kwargs)
+        context['logando'] = True
+
+        return context
+    
+    def form_valid(self, form):
+        # acessa os campos enviados no form
+        username = form.cleaned_data['username']
+        senha = form.cleaned_data['password']
+
+        acesso = authenticate(self.request,username = username,password = senha)
+
+        if acesso:
+            try:
+                login(self.request,acesso)
+                return redirect('url_home')
+            except Exception as erro:
+                return HttpResponse(f"{erro}")
+        else:
+            return super().form_invalid(form)  
+         
+        return super().form_valid(form)
+
+class Cadastro(FormView):
+    template_name = "cifras/login.html"
+    form_class = CadastroUserForm
+    success_url = reverse_lazy('url_login')
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['logando'] = False
+
+        return context
+
+    def form_valid(self,form):
+        
+        form.save()
+
+        return super().form_valid(form)
 
 
 # pagina Home/listagem dos resultados 
@@ -56,7 +108,8 @@ class PerfilMusica(View):
 class CreateMusicasAprender(View):
     def post(self,request,*args,**kwargs):
         id_musica = self.request.POST.get('id_musica')
-        capa_album = self.request.POST.get('imagem_album')
+        capa_album_medium = self.request.POST.get('imagem_album_medium')
+        capa_album_small = self.request.POST.get('imagem_album_small')
         nome_banda = self.request.POST.get('nome_banda')
         nome_musica = self.request.POST.get('nome_musica')
         duracao = self.request.POST.get('duracao')
@@ -64,7 +117,7 @@ class CreateMusicasAprender(View):
         bpm = round(bpm) # aqui pegamos esse float e arredondamos para cima, tornando ela um INT(nosso campo "bpm" do model só aceita valores inteiros)
         instrumento = self.request.POST.get('instrumento')
 
-        obj = MusicasAprender.objects.create(capa_album = capa_album,nome_banda = nome_banda,nome_musica = nome_musica, duracao = duracao, bpm = bpm, instrumento = instrumento)
+        obj = MusicasAprender.objects.create(user = request.user,capa_album_small = capa_album_small,capa_album_medium = capa_album_medium,nome_banda = nome_banda,nome_musica = nome_musica, duracao = duracao, bpm = bpm, instrumento = instrumento)
 
         if obj:
             caminho_perfilmusica = reverse('url_perfilmusica',kwargs={'id': id_musica}) # usa a função reverse para pegar o caminho da URL que tem o nome programado igual a 'url_perfilmusica', informando o name da URL e o valor a ser armazenado no Kwargs <int:id>
@@ -88,7 +141,7 @@ class ListMusicasAprender(ListView):
         # recebe pela URL no metodo GET a string do instrumento para filtrar a busca
         query = self.request.GET.get('q')
         if query:
-            return MusicasAprender.objects.filter(instrumento = query) # Se o programa encontrar o filtro no metodo GET do request(informação pela url do site) ele retorna os objetos com instrumento igual à palavra encontrada no GET
+            return MusicasAprender.objects.filter(user = self.request.user ,instrumento = query) # Se o programa encontrar o filtro no metodo GET do request(informação pela url do site) ele retorna os objetos com instrumento igual à palavra encontrada no GET
         return super().get_queryset()
 
     def get_context_data(self, **kwargs):
@@ -117,7 +170,7 @@ class UpdateMusicasAprender(FormView):
         return kwargs
     
     def form_valid(self, form):
-        form.save() # salva o formulário(no FormView é preciso salvar manualmente, em UpdateView por exemplo, não é necessário)
+        form.save() # salva o formulário(no FormView é preciso salvar manualmente, em UpdateView e CreateView por exemplo, não é necessário)
         return super().form_valid(form) # retorna
 
 
@@ -162,7 +215,7 @@ class ListMusicasAprendidas(ListView):
     def get_queryset(self):
         query = self.request.GET.get('q')
         if query:
-            return MusicasAprendidas.objects.filter(musica__instrumento = query) # em Django, usamos duas underlines("__") para acessar campos do objeto referenciado numa ForeignKey, no nosso caso queremos acesso ao campo instrumento do objeto "MusicasAprender" que é referenciado no campo musica do model "MusicasAprendidas" na ForeignKey "musica"
+            return MusicasAprendidas.objects.filter(musica__user = self.request.user ,musica__instrumento = query) # em Django, usamos duas underlines("__") para acessar campos do objeto referenciado numa ForeignKey, no nosso caso queremos acesso ao campo instrumento do objeto "MusicasAprender" que é referenciado no campo musica do model "MusicasAprendidas" na ForeignKey "musica"
         return super().get_queryset()
 
     def get_context_data(self, **kwargs):
@@ -188,7 +241,6 @@ class MusicaAprendidaDelete(DeleteView):
         context['musica_aprendida'] = "model_musica_aprendida" # especifica para o template que o model que acessa é o MusicasAprendidas
 
         return context
-
 
 class MusicaAprendidaUpdate(FormView):
     template_name = "cifras/musicasForm.html"

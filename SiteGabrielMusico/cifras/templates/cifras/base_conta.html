@@ -1,0 +1,20 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Musics to Play{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'cifras/css/landing.css' %}">
+    <link rel="stylesheet" href="{% static 'cifras/css/conta.css' %}">
+</head>
+<body class="account-page">
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <header class="site-header wrap">
+        <a class="brand" href="{% url 'url_home' %}" aria-label="Musics to Play — início"><span class="brand-icon" aria-hidden="true">♫</span>musics<span class="brand-light">to</span>play<span class="brand-dot">.</span></a>
+        <nav aria-label="Navegação principal"><a class="nav-discover" href="{% url 'url_home' %}#descobrir">Descobrir</a><a class="nav-library" href="{% url 'url_perfiluser' %}">Meu repertório <span aria-hidden="true">↗</span></a></nav>
+    </header>
+    <main id="conteudo">{% block content %}{% endblock %}</main>
+    <footer class="site-footer wrap"><a class="brand" href="{% url 'url_home' %}">musics<span class="brand-light">to</span>play<span class="brand-dot">.</span></a><p>Feito para quem ama música. No seu tempo, no seu ritmo.</p><a href="{% url 'url_home' %}">Voltar ao início ↗</a></footer>
+</body>
+</html>

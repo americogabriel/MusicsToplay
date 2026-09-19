@@ -1,20 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Você deseja remover essa musica de sua lista?</h1>
-    <form method="POST">
-        {% csrf_token %}
-        <button type="submit">Sim</button> 
-        {% if musica_aprender %}
-            <a href="{% url 'url_listmusicasaprender' %}">Não</a>
-        {% elif musica_aprendida %}
-            <a href="{% url 'url_listmusicasaprendidas' %}">Não</a>
-        {% endif %}
-    </form>
-</body>
-</html>
+{% extends 'cifras/base_conta.html' %}
+{% block title %}Excluir música · Musics to Play{% endblock %}
+{% block content %}
+{% if musica_aprender %}{% url 'url_listmusicasaprender' as cancel_url %}{% elif musica_aprendida %}{% url 'url_listmusicasaprendidas' as cancel_url %}{% endif %}
+<section class="edit-page wrap" aria-labelledby="delete-title">
+    <a class="text-link" href="{{ cancel_url }}">← Voltar à lista</a>
+    <div class="edit-panel account-panel">
+        <span class="step-icon peach" aria-hidden="true">−</span>
+        <span class="eyebrow edit-eyebrow">CUIDANDO DO SEU REPERTÓRIO</span>
+        <h1 id="delete-title">Remover esta<br><em>música?</em></h1>
+        <p class="account-intro">{% if musica_aprender %}Confirme a exclusão desta música da sua lista de músicas para aprender.{% else %}Confirme a exclusão deste registro da sua lista de músicas aprendidas.{% endif %}</p>
+        <div class="delete-song"><span class="note-icon" aria-hidden="true">♫</span><div><strong>{% if musica_aprender %}{{ object.nome_musica }}{% else %}{{ object.musica.nome_musica }}{% endif %}</strong><p>{% if musica_aprender %}{{ object.nome_banda }}{% else %}{{ object.musica.nome_banda }}{% endif %}</p></div></div>
+        <form method="post" class="account-form">
+            {% csrf_token %}
+            {% if form.errors %}<div class="account-errors" role="alert">{{ form.errors }}</div>{% endif %}
+            <div class="edit-buttons"><button class="button-dark button-delete" type="submit">Sim, excluir música</button><a class="button-secondary" href="{{ cancel_url }}">Cancelar</a></div>
+        </form>
+    </div>
+</section>
+{% endblock %}
